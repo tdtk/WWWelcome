@@ -1,4 +1,4 @@
-# WWWelcom
+# WWWelcome
 
 ## アプリの概要
 
