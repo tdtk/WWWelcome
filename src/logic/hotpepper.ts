@@ -8,7 +8,7 @@ export type HotPepperQuery = {
 };
 
 export type HotPepperResult = {
-  result: {
+  results: {
     api_version: string;
     results_available: number;
     results_returned: number;
@@ -37,7 +37,6 @@ export const fetchHotPepper = (query: HotPepperQuery, callbuck: (json: HotPepper
   const sc = document.createElement("script");
   sc.type = 'text/javascript';
   sc.src = `http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${process.env['REACT_APP_HOTPEPPER_API_KEY']}${query_str}&format=jsonp&callback=HotPepperCallBack`;
-  console.log(sc.src)
   const parent = document.getElementsByTagName("script")[0];
   parent!.parentNode!.insertBefore(sc, parent);
 };
