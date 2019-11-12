@@ -5,6 +5,7 @@ import Header from './components/Header/Header';
 import GoogleMap from './components/GoogleMap/GoogleMap';
 import { fetchHotPepper, HotPepperResult } from './logic/hotpepper';
 import Toasts, {ToastProps} from './components/Toasts/Toasts';
+import { Row, Col } from 'react-bootstrap';
 
 const App: React.FC = () => {
   const [toasts, setToasts] = useState([] as ToastProps[]);
@@ -20,8 +21,14 @@ const App: React.FC = () => {
   return (
     <div className="App">
       <Header/>
-      <Toasts toasts={toasts}/>
-      <GoogleMap/>
+      <Row style={{ margin: 0 }}>
+        <Col md={4} style={{ padding: 0 }}>
+          <Toasts toasts={toasts} group={'付近の飲食店'} credit={(<> Powered by <a href="http://webservice.recruit.co.jp/">ホットペッパー Webサービス</a> </>)}/>
+        </Col>
+        <Col md={8} style={{ padding: 0 }}>
+          <GoogleMap />
+        </Col>
+      </Row>
     </div>
   );
 }

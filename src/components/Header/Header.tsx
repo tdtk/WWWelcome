@@ -3,7 +3,7 @@ import {Nav, Navbar, NavDropdown} from 'react-bootstrap';
 
 const Header: React.FC = () => {
   return (
-    <Navbar bg='success' expand="lg" variant='dark'>
+    <Navbar bg='success' expand="lg" variant='dark' >
       <Navbar.Brand href="#home">WWWelcome</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">

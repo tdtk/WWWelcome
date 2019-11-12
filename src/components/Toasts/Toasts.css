@@ -1,0 +1,15 @@
+
+.toast {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.toasts {
+  overflow: scroll;
+  margin-top: 1vh;
+}
+
+.Group-header.toast {
+  color: white;
+  background-color:rgb(40, 167, 69);
+}
