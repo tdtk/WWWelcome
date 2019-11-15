@@ -7,11 +7,11 @@ import { fetchHotPepper, HotPepperResult } from './logic/hotpepper';
 import { getPosition } from './logic/geolocation';
 import { calcDistance } from './logic/distance';
 import Toasts, {ToastData} from './components/Toasts/Toasts';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Card } from 'react-bootstrap';
 
 const HotpepperCredit = <> Powered by <a href="http://webservice.recruit.co.jp/">ホットペッパー Webサービス</a> </>;
 
-export type PageType = 'list' | 'detail';
+export type PageType = 'list' | 'map';
 
 type PlaceList = {
   group: string,
@@ -29,18 +29,30 @@ const List: React.FC<ListProps> = (props) => {
     <Row style={{ margin: 0 }}>
       {props.placelists.map((placelist, key) => (
         <Col key={key} md={6} lg={3}>
-          <Toasts toasts={placelist.toasts} group={placelist.group} credit={placelist.credit} onClick={() => props.setPagetype('detail')} />
+          <Toasts toasts={placelist.toasts} group={placelist.group} credit={placelist.credit} onClick={() => props.setPagetype('map')} />
         </Col>
       ))}
     </Row>
   );
 };
 
-const Detail: React.FC = () => {
+const Map: React.FC = () => {
   return (
-    <Row style={{ margin: 0 }}>
-      <Col sm={12} md={8} style={{ padding: 0 }}>
+    <Row>
+      <Col sm={12} md={8}>
         <GoogleMap />
+      </Col>
+      <Col sm={12} md={4}>
+        <Card>
+          <Card.Img variant="top" src="holder.js/100px180" />
+          <Card.Body>
+            <Card.Title>Card Title</Card.Title>
+            <Card.Text>
+              Some quick example text to build on the card title and make up the bulk of
+              the card's content.
+            </Card.Text>
+          </Card.Body>
+        </Card>
       </Col>
     </Row>
   )
@@ -93,13 +105,13 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
-      <Header/>
+      <Header pagetype={pagetype} setPagetype={setPagetype}/>
       <div style={{marginTop: '56px'}}>
         <Container fluid={true} style={{ visibility: pagetype === 'list' ? 'visible' : 'hidden', position: 'absolute'}} >
           <List placelists={placelists} setPagetype={setPagetype}/>
         </Container>
-        <Container fluid={true} style={{ visibility: pagetype === 'detail' ? 'visible' : 'hidden', position: 'absolute', width: '100%', height: '100%'}} >
-          <Detail />
+        <Container fluid={true} style={{ visibility: pagetype === 'map' ? 'visible' : 'hidden', position: 'absolute', width: '100%', height: '100%'}} >
+          <Map />
         </Container>
       </div>
     </div>
