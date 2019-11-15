@@ -36,7 +36,7 @@ export const fetchHotPepper = (query: HotPepperQuery, callbuck: (json: HotPepper
   (window as any)['HotPepperCallBack'] = callbuck;
   const sc = document.createElement("script");
   sc.type = 'text/javascript';
-  sc.src = `http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${process.env['REACT_APP_HOTPEPPER_API_KEY']}${query_str}&format=jsonp&callback=HotPepperCallBack`;
+  sc.src = `https://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${process.env['REACT_APP_HOTPEPPER_API_KEY']}${query_str}&format=jsonp&callback=HotPepperCallBack`;
   const parent = document.getElementsByTagName("script")[0];
   parent!.parentNode!.insertBefore(sc, parent);
 };

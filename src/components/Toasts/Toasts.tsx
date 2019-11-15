@@ -2,18 +2,22 @@ import React from 'react';
 import { Toast as BToast } from 'react-bootstrap';
 import "./Toasts.css";
 
-export type ToastProps = {
+export type ToastData = {
   title: string;
-  info: string;
+  dist: number;
   body: string;
+};
+
+export type ToastProps = ToastData & {
+  onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 };
 
 const Toast: React.FC<ToastProps> = (props: ToastProps) => {
   return (
-    <BToast>
+    <BToast onClick={(e) => props.onClick(e)}>
       <BToast.Header closeButton={false}>
         <strong className='mr-auto'>{props.title}</strong>
-        <small>{props.info}</small>
+        <small>{`${Math.round(props.dist)} m`}</small>
       </BToast.Header>
       <BToast.Body>
         {props.body}
@@ -23,9 +27,10 @@ const Toast: React.FC<ToastProps> = (props: ToastProps) => {
 };
 
 export type ToastsProps = {
-  toasts: ToastProps[];
+  toasts: ToastData[];
   group: string;
   credit?: JSX.Element;
+  onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 };
 
 const Toasts: React.FC<ToastsProps> = (props: ToastsProps) => {
@@ -37,7 +42,7 @@ const Toasts: React.FC<ToastsProps> = (props: ToastsProps) => {
           <small>{props.credit}</small>
         </BToast.Body>
       </BToast>
-      {props.toasts.map((toast, key) => <Toast key={key} {...toast}/>)}
+      {props.toasts.map((toast, key) => <Toast key={key} onClick={props.onClick} {...toast}/>)}
     </div>
   );
 };

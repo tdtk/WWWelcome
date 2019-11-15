@@ -1,9 +1,10 @@
 import React from 'react';
 import {Nav, Navbar, NavDropdown} from 'react-bootstrap';
+import './Header.css';
 
 const Header: React.FC = () => {
   return (
-    <Navbar bg='success' expand="lg" variant='dark' >
+    <Navbar fixed='top' id='Header' expand="lg" variant='dark' >
       <Navbar.Brand href="#home">WWWelcome</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">

@@ -5,11 +5,10 @@
 }
 
 .toasts {
-  overflow: scroll;
   margin-top: 1vh;
 }
 
 .Group-header.toast {
   color: white;
-  background-color:rgb(40, 167, 69);
+  background-color:rgb(103, 186, 103);
 }
