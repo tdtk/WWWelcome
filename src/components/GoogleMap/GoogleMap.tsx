@@ -6,6 +6,7 @@ const maps = google.maps;
 type GoogleMapProps = {
   placelist: PlaceList | null,
   userCrd: Pos | null,
+  crd: Pos | null,
   setCrd: (crd: Pos | null) => void
 };
 
@@ -53,9 +54,14 @@ const GoogleMap: React.FC<GoogleMapProps> = (props) => {
   }, [map, distMarker]);
 
   useEffect(() => {
+    if(map && props.crd){
+      map.panTo(props.crd);
+    }
+  }, [map, props.crd]);
+
+  useEffect(() => {
     if(map){
       const crd = props.userCrd ? { lat: props.userCrd.lat, lng: props.userCrd.lng } : { lat: -25.344, lng: 131.036 };
-      map.panTo(crd);
       if(!userMarker){
         const _userMarker = new maps.Marker({
           position: new maps.LatLng(crd),

@@ -1,3 +1,4 @@
+let cnt = 0;
 
 export const yahoo = (latitude, longitude, distance = 0, count = 10, category, callback) => {
     var gcs = "0";
@@ -49,13 +50,15 @@ export const yahoo = (latitude, longitude, distance = 0, count = 10, category, c
         default:
             break
     }
-    window['YahooCallBack'] = callback;
+    const callBackName = `YahooCallBack${cnt}`;
+    cnt = cnt + 1;
+    window[callBackName] = callback;
     const sc = document.createElement("script");
     sc.type = 'text/javascript';
     sc.src = `https://map.yahooapis.jp/search/local/V1/localSearch?appid=${process.env['REACT_APP_YAHOO_API_KEY']}&output=json
 &lat=${String(latitude)}
 &lon=${String(longitude)}
-&dist=${String(distance)}&sort=geo&results=${String(count)}&gc=${gcs}&callback=YahooCallBack`;
+&dist=${String(distance)}&sort=geo&results=${String(count)}&gc=${gcs}&callback=${callBackName}`;
     const parent = document.getElementsByTagName("script")[0];
     parent.parentNode.insertBefore(sc, parent);
 }

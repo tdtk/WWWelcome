@@ -5,6 +5,7 @@ import Header from './components/Header/Header';
 import GoogleMap from './components/GoogleMap/GoogleMap';
 import Detail from './components/Detail/Detail';
 import { fetchHotPepper, HotPepperResult } from './logic/hotpepper';
+import { yahoo } from './logic/yahoo';
 import { getPosition } from './logic/geolocation';
 import { calcDistance } from './logic/distance';
 import Toasts from './components/Toasts/Toasts';
@@ -12,13 +13,35 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { Map } from 'immutable'; 
 
 const HotpepperCredit = <> Powered by <a href="http://webservice.recruit.co.jp/">ホットペッパー Webサービス</a> </>;
+const YahooCredit = <><a href="https://developer.yahoo.co.jp/about">Webサービス by Yahoo! JAPAN</a></>;
 
 export type Pos = {lat: number, lng: number};
 
 export type PageType = 'list' | 'map';
 
+type Fet = {
+  Geometry:{
+    Coordinates: string,
+    Type: string
+  }
+  Gid: string,
+  Id: string,
+  Name: string,
+  CatchCopy: string,
+  Property: {
+    Address: string,
+    Genre: {Code: string, Name: string}[],
+    Tel1: string
+  }
+};
+
+type YahooResponce = {
+  Feature: Fet[]
+};
+
 export type PlaceData = {
   name: string,
+  address: string,
   detail: string,
   dist: number,
   crd: {lat: number, lng: number}
@@ -49,6 +72,7 @@ const ListView: React.FC<ListViewProps> = (props) => {
 
 type MapViewProps = {
   placelist: PlaceList | null,
+  crd: Pos | null,
   userCrd: Pos | null,
   selectedIndex: number | null,
   setCrd: (crd: Pos | null) => void
@@ -92,7 +116,7 @@ const App: React.FC = () => {
       fetchHotPepper({ lat: crd.lat, lng: crd.lng, range: 5, order: 4 }, (json: HotPepperResult) => {
         console.log(json);
         const shop_info: PlaceData[] = json.results.shop.map((shop) => {
-          return { name: shop.name, dist: calcDistance({ lat: crd.lat, lng: crd.lng }, { lat: Number(shop.lat), lng: Number(shop.lng) }), detail: shop.catch, crd: { lat: Number(shop.lat), lng: Number(shop.lng) } }
+          return { name: shop.name, dist: calcDistance({ lat: crd.lat, lng: crd.lng }, { lat: Number(shop.lat), lng: Number(shop.lng) }), detail: shop.catch, crd: { lat: Number(shop.lat), lng: Number(shop.lng) }, address: shop.address }
         });
         shop_info.sort((a, b) => {
           if (a.dist < b.dist) {
@@ -103,7 +127,71 @@ const App: React.FC = () => {
             return 0;
           }
         });
-        setPlacelists(p => p.set('付近の飲食店', { group: '付近の飲食店', places: shop_info, credit: HotpepperCredit }))
+        setPlacelists(p => p.set('付近の飲食店', { group: '付近の飲食店', places: shop_info, credit: HotpepperCredit }));
+      });
+      yahoo(crd.lat, crd.lng, 500, 10, 'cafe', (json: YahooResponce) => {
+        if(!json.Feature){
+          console.log(json);
+          return 
+        }
+        const places: PlaceData[] = json.Feature.map((fet: Fet) => {
+          const [lng, lat] = fet.Geometry.Coordinates.split(',').map((s) => Number(s));
+          const detail = fet.Property.Genre.map((g) => g.Name).reduce((pre, cur) => `${pre}, ${cur}`);
+          return { name: fet.Name, dist: calcDistance({ lat: crd.lat, lng: crd.lng }, { lat: lat, lng: lng }), detail: detail, crd: { lat: lat, lng: lng }, address: fet.Property.Address};
+        });
+        places.sort((a, b) => {
+          if (a.dist < b.dist) {
+            return -1;
+          } else if (a.dist > b.dist) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
+        setPlacelists(p => p.set('付近のカフェ', { group: '付近のカフェ', places: places, credit: YahooCredit }));
+      });
+      yahoo(crd.lat, crd.lng, 500, 10, 'fashion', (json: YahooResponce) => {
+        if (!json.Feature) {
+          console.log(json);
+          return
+        }
+        console.log(json);
+        const places: PlaceData[] = json.Feature.map((fet: Fet) => {
+          const [lng, lat] = fet.Geometry.Coordinates.split(',').map((s) => Number(s));
+          const detail = fet.Property.Genre.map((g) => g.Name).reduce((pre, cur) => `${pre}, ${cur}`);
+          return { name: fet.Name, dist: calcDistance({ lat: crd.lat, lng: crd.lng }, { lat: lat, lng: lng }), detail: detail, crd: { lat: lat, lng: lng }, address: fet.Property.Address };
+        });
+        places.sort((a, b) => {
+          if (a.dist < b.dist) {
+            return -1;
+          } else if (a.dist > b.dist) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
+        setPlacelists(p => p.set('付近の洋服屋', { group: '付近の洋服屋', places: places, credit: YahooCredit }));
+        yahoo(crd.lat, crd.lng, 500, 10, 'transportation', (json: YahooResponce) => {
+          if (!json.Feature) {
+            console.log(json);
+            return
+          }
+          const places: PlaceData[] = json.Feature.map((fet: Fet) => {
+            const [lng, lat] = fet.Geometry.Coordinates.split(',').map((s) => Number(s));
+            const detail = fet.Property.Genre.map((g) => g.Name).reduce((pre, cur) => `${pre}, ${cur}`);
+            return { name: fet.Name, dist: calcDistance({ lat: crd.lat, lng: crd.lng }, { lat: lat, lng: lng }), detail: detail, crd: { lat: lat, lng: lng }, address: fet.Property.Address };
+          });
+          places.sort((a, b) => {
+            if (a.dist < b.dist) {
+              return -1;
+            } else if (a.dist > b.dist) {
+              return 1;
+            } else {
+              return 0;
+            }
+          });
+          setPlacelists(p => p.set('付近の交通機関', { group: '付近の交通機関', places: places, credit: YahooCredit }));
+        });
       });
     }
     
@@ -123,7 +211,7 @@ const App: React.FC = () => {
           <ListView placelists={placelists} onClick={onListClick}/>
         </Container>
         <Container fluid={true} style={{ visibility: pagetype === 'map' ? 'visible' : 'hidden', position: 'absolute', width: '100%', height: '100%'}} >
-          <MapView placelist={selectedGroup ? placelists.get(selectedGroup)! : null} selectedIndex={selectedIndex} userCrd={userCrd} setCrd={setCrd} />
+          <MapView placelist={selectedGroup ? placelists.get(selectedGroup)! : null} selectedIndex={selectedIndex} crd={crd} userCrd={userCrd} setCrd={setCrd} />
         </Container>
       </div>
     </div>
