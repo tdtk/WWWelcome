@@ -13,6 +13,8 @@ import { Map } from 'immutable';
 
 const HotpepperCredit = <> Powered by <a href="http://webservice.recruit.co.jp/">ホットペッパー Webサービス</a> </>;
 
+export type Pos = {lat: number, lng: number};
+
 export type PageType = 'list' | 'map';
 
 export type PlaceData = {
@@ -47,9 +49,9 @@ const ListView: React.FC<ListViewProps> = (props) => {
 
 type MapViewProps = {
   placelist: PlaceList | null,
-  crd: Coordinates | null,
+  userCrd: Pos | null,
   selectedIndex: number | null,
-  setCrd: (crd: Coordinates | null) => void
+  setCrd: (crd: Pos | null) => void
 };
 
 const MapView: React.FC<MapViewProps> = (props) => {
@@ -68,15 +70,17 @@ const MapView: React.FC<MapViewProps> = (props) => {
 const App: React.FC = () => {
   const [placelists, setPlacelists] = useState(Map({}) as Map<string, PlaceList>);
   const [pagetype, setPagetype] = useState('list' as PageType);
-  const [crd, setCrd] = useState(null as Coordinates | null);
+  const [crd, setCrd] = useState(null as Pos | null);
+  const [userCrd, setUserCrd] = useState(null as Pos | null);
   const [selectedGroup, setSelectedGroup] = useState(null as null | string);
   const [selectedIndex, setSelectedIndex] = useState(null as null | number);
 
   useEffect(() => {
     getPosition(setCrd);
+    getPosition(setUserCrd);
     const getSometimes = (msec: number) => {
       setTimeout(() => {
-        getPosition(setCrd);
+        getPosition(setUserCrd);
         getSometimes(msec);
       }, msec);
     };
@@ -85,10 +89,10 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if(crd){
-      fetchHotPepper({ lat: crd.latitude, lng: crd.longitude, range: 5, order: 4 }, (json: HotPepperResult) => {
+      fetchHotPepper({ lat: crd.lat, lng: crd.lng, range: 5, order: 4 }, (json: HotPepperResult) => {
         console.log(json);
         const shop_info: PlaceData[] = json.results.shop.map((shop) => {
-          return { name: shop.name, dist: calcDistance({ lat: crd.latitude, lng: crd.longitude }, { lat: Number(shop.lat), lng: Number(shop.lng) }), detail: shop.catch, crd: { lat: Number(shop.lat), lng: Number(shop.lng) } }
+          return { name: shop.name, dist: calcDistance({ lat: crd.lat, lng: crd.lng }, { lat: Number(shop.lat), lng: Number(shop.lng) }), detail: shop.catch, crd: { lat: Number(shop.lat), lng: Number(shop.lng) } }
         });
         shop_info.sort((a, b) => {
           if (a.dist < b.dist) {
@@ -119,7 +123,7 @@ const App: React.FC = () => {
           <ListView placelists={placelists} onClick={onListClick}/>
         </Container>
         <Container fluid={true} style={{ visibility: pagetype === 'map' ? 'visible' : 'hidden', position: 'absolute', width: '100%', height: '100%'}} >
-          <MapView placelist={selectedGroup ? placelists.get(selectedGroup)! : null} selectedIndex={selectedIndex} crd={crd} setCrd={setCrd} />
+          <MapView placelist={selectedGroup ? placelists.get(selectedGroup)! : null} selectedIndex={selectedIndex} userCrd={userCrd} setCrd={setCrd} />
         </Container>
       </div>
     </div>

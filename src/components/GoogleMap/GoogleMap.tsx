@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { PlaceList } from '../../App';
+import { PlaceList, Pos } from '../../App';
 
 const maps = google.maps;
 
 type GoogleMapProps = {
   placelist: PlaceList | null,
-  crd: Coordinates | null,
-  setCrd: (crd: Coordinates | null) => void
+  userCrd: Pos | null,
+  setCrd: (crd: Pos | null) => void
 };
 
 
@@ -40,8 +40,9 @@ const GoogleMap: React.FC<GoogleMapProps> = (props) => {
         const btn = document.createElement("button");
         btn.className = 'btn btn-primary';
         btn.innerText = 'この周辺を探す';
-        google.maps.event.addDomListener(btn, "click", function () {
-          alert('clicked me!');
+        const _pos = { lat: handler.latLng.lat(), lng: handler.latLng.lng() };
+        google.maps.event.addDomListener(btn, "click", () => {
+          props.setCrd(_pos);
         });
         distInfo.setContent(btn);
         distInfo.open(map, _distMarker);
@@ -53,7 +54,7 @@ const GoogleMap: React.FC<GoogleMapProps> = (props) => {
 
   useEffect(() => {
     if(map){
-      const crd = props.crd ? { lat: props.crd.latitude, lng: props.crd.longitude } : { lat: -25.344, lng: 131.036 };
+      const crd = props.userCrd ? { lat: props.userCrd.lat, lng: props.userCrd.lng } : { lat: -25.344, lng: 131.036 };
       map.panTo(crd);
       if(!userMarker){
         const _userMarker = new maps.Marker({
@@ -78,13 +79,13 @@ const GoogleMap: React.FC<GoogleMapProps> = (props) => {
         _userMarker.addListener('mousedown', () => { uminfo.open(map, _userMarker); });
         setUserMarker(_userMarker);
       }else{
-        if(props.crd){
-          userMarker.setPosition(new maps.LatLng(props.crd.latitude, props.crd.longitude));
+        if(props.userCrd){
+          userMarker.setPosition(new maps.LatLng(props.userCrd.lat, props.userCrd.lng));
         }
         
       }
     }
-  }, [props.crd, userMarker, map])
+  }, [props.userCrd, userMarker, map])
   useEffect(() => {
     if (map && props.placelist){
       console.log(props.placelist)

@@ -1,8 +1,9 @@
+import { Pos } from '../App';
 
 
-export const getPosition = (setFunc: (crd: Coordinates) => void) => {
+export const getPosition = (setFunc: (_pos: Pos) => void) => {
   const success: PositionCallback = (pos: Position) => {
-    setFunc(pos.coords);
+    setFunc({ lat: pos.coords.latitude, lng: pos.coords.longitude});
   };
   const error: PositionErrorCallback = (e: PositionError) => {
     console.log(e);
@@ -10,9 +11,9 @@ export const getPosition = (setFunc: (crd: Coordinates) => void) => {
   navigator.geolocation.getCurrentPosition(success, error);
 };
 
-export const watchPosition = (setFunc: (crd: Coordinates) => void) => {
+export const watchPosition = (setFunc: (_pos: Pos) => void) => {
   const success: PositionCallback = (pos: Position) => {
-    setFunc(pos.coords);
+    setFunc({ lat: pos.coords.latitude, lng: pos.coords.longitude });
   };
   const error: PositionErrorCallback = (e: PositionError) => {
     console.log(e);
