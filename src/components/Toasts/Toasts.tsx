@@ -30,7 +30,7 @@ export type ToastsProps = {
   toasts: ToastData[];
   group: string;
   credit?: JSX.Element;
-  onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
+  onClick: (idx: number) => void
 };
 
 const Toasts: React.FC<ToastsProps> = (props: ToastsProps) => {
@@ -42,7 +42,7 @@ const Toasts: React.FC<ToastsProps> = (props: ToastsProps) => {
           <small>{props.credit}</small>
         </BToast.Body>
       </BToast>
-      {props.toasts.map((toast, key) => <Toast key={key} onClick={props.onClick} {...toast}/>)}
+      {props.toasts.map((toast, index) => <Toast key={index} onClick={(e) => props.onClick(index)} {...toast}/>)}
     </div>
   );
 };
