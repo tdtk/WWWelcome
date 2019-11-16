@@ -205,7 +205,7 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
-      <Header pagetype={pagetype} setPagetype={setPagetype}/>
+      <Header pagetype={pagetype} setPagetype={setPagetype} getPosition={() => getPosition(setCrd)}/>
       <div style={{marginTop: '56px'}}>
         <Container fluid={true} style={{ visibility: pagetype === 'list' ? 'visible' : 'hidden', position: 'absolute'}} >
           <ListView placelists={placelists} onClick={onListClick}/>

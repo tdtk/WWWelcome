@@ -1,11 +1,15 @@
 import React from 'react';
-import {Nav, Navbar} from 'react-bootstrap';
+import {Nav, Navbar, Button, Form} from 'react-bootstrap';
 import {PageType} from '../../App';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCrosshairs } from '@fortawesome/free-solid-svg-icons'
+
 import './Header.css';
 
 type HeaderProps = {
   pagetype: PageType,
-  setPagetype: (ty: PageType) => void
+  setPagetype: (ty: PageType) => void,
+  getPosition: () => void
 };
 
 const Header: React.FC<HeaderProps> = (props) => {
@@ -24,6 +28,10 @@ const Header: React.FC<HeaderProps> = (props) => {
       <Nav className="mr-auto">
         {switchLink(props.pagetype)}
       </Nav>
+      <Form.Control as="select" style={{width: '5vw', marginRight: '1vw'}}>
+        <option>JP</option>
+      </Form.Control>
+      <Button onClick={props.getPosition} id='get-position-button'><FontAwesomeIcon icon={faCrosshairs} /></Button>
     </Navbar>
   )
 };

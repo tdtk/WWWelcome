@@ -96,11 +96,22 @@ const GoogleMap: React.FC<GoogleMapProps> = (props) => {
     if (map && props.placelist){
       console.log(props.placelist)
       markers.map((marker) => marker.setMap(null));
-      setMarkers(props.placelist.places.map((place) => new maps.Marker({
-        position: new maps.LatLng(place.crd),
-        label: place.name,
-        animation: google.maps.Animation.DROP,
-        map: map})))
+      setMarkers(props.placelist.places.map((place) => {
+        const m = new maps.Marker({
+          position: new maps.LatLng(place.crd),
+          animation: google.maps.Animation.DROP,
+          map: map
+        });
+        var minfo = new google.maps.InfoWindow({
+          content: `
+        <div>${place.name}</div>
+        `
+        });
+        m.addListener('mouseover', () => { minfo.open(map, m); });
+        m.addListener('mousedown', () => { minfo.open(map, m); });
+        m.addListener('mouseout', () => { minfo.close(); });
+        return m;
+      }));
     }
   // eslint-disable-next-line
   }, [props.placelist, map]);

@@ -1,6 +1,6 @@
 import React from 'react';
 import { PlaceData } from '../../App';
-import { Card } from 'react-bootstrap';
+import { Card, ListGroup } from 'react-bootstrap';
 
 export type DetailProps = {
   place: PlaceData
@@ -8,11 +8,14 @@ export type DetailProps = {
 
 const Detail: React.FC<DetailProps> = (props) => {
   return(
-    <Card>
-      <Card.Img variant="top" src="holder.js/100px180" />
+    <Card style={{marginTop: '5px'}}>
       <Card.Body>
         <Card.Title>{props.place.name}</Card.Title>
-        <Card.Text>{props.place.detail}</Card.Text>
+        <ListGroup variant="flush">
+          <ListGroup.Item>{props.place.detail}</ListGroup.Item>
+          <ListGroup.Item>{props.place.address}</ListGroup.Item>
+          <ListGroup.Item>{`ここから${Math.round(props.place.dist)}m です．`}</ListGroup.Item>
+        </ListGroup>
       </Card.Body>
     </Card>
   );
