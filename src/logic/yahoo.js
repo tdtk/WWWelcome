@@ -1,5 +1,5 @@
 
-function yahoo(latitude, longitude, distance = 0, count = 10, category) {
+export const yahoo = (latitude, longitude, distance = 0, count = 10, category, callback) => {
     var gcs = "0";
     switch (category) {
         case 'JPFood':
@@ -46,18 +46,16 @@ function yahoo(latitude, longitude, distance = 0, count = 10, category) {
         case 'shelter':
             gcs = "0425";
             break;
+        default:
+            break
     }
-    const fetch = require("node-fetch");
-    const APIKey = (`dj00aiZpPVh6OE83a0VCQnhRUCZzPWNvbnN1bWVyc2VjcmV0Jng9NzQ-`);
-    var query = `https://map.yahooapis.jp/search/local/V1/localSearch?appid=${APIKey}&output=json
+    window['YahooCallBack'] = callback;
+    const sc = document.createElement("script");
+    sc.type = 'text/javascript';
+    sc.src = `https://map.yahooapis.jp/search/local/V1/localSearch?appid=${process.env['REACT_APP_YAHOO_API_KEY']}&output=json
 &lat=${String(latitude)}
 &lon=${String(longitude)}
-&dist=${String(distance)}&sort=geo&results=${String(count)}&gc=${gcs}`;
-    console.log(query)
-    var hoge = fetch(query)
-        .then(response => {
-            console.log(response.status); // => 200
-            return response.json();
-        });
-    return hoge;
+&dist=${String(distance)}&sort=geo&results=${String(count)}&gc=${gcs}&callback=YahooCallBack`;
+    const parent = document.getElementsByTagName("script")[0];
+    parent.parentNode.insertBefore(sc, parent);
 }
