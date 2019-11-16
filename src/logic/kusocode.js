@@ -1,3 +1,4 @@
+
 function yahoo(latitude, longitude, distance = 0, count = 10, category) {
     var gcs = "0";
     switch (category) {
@@ -53,9 +54,10 @@ function yahoo(latitude, longitude, distance = 0, count = 10, category) {
 &lon=${String(longitude)}
 &dist=${String(distance)}&sort=geo&results=${String(count)}&gc=${gcs}`;
     console.log(query)
-    fetch(query)
+    var hoge = fetch(query)
         .then(response => {
             console.log(response.status); // => 200
             return response.json();
         });
+    return hoge;
 }
