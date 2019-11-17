@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { PlaceList, Pos } from '../../App';
-
+import './GoogleMap.css';
 const maps = google.maps;
 
 type GoogleMapProps = {
@@ -39,6 +39,7 @@ const GoogleMap: React.FC<GoogleMapProps> = (props) => {
         });
         const distInfo = new google.maps.InfoWindow({content: ''});
         const btn = document.createElement("button");
+        btn.id = 'dist-btn'
         btn.className = 'btn btn-primary';
         btn.innerText = 'この周辺を探す';
         const _pos = { lat: handler.latLng.lat(), lng: handler.latLng.lng() };
@@ -76,7 +77,7 @@ const GoogleMap: React.FC<GoogleMapProps> = (props) => {
         });
         var uminfo = new google.maps.InfoWindow({
           content: `
-        <div>現在地</div>
+        <div class='info-window'>現在地</div>
         `
         });
         _userMarker.addListener('mouseover', () => { uminfo.open(map, _userMarker); });
@@ -104,7 +105,7 @@ const GoogleMap: React.FC<GoogleMapProps> = (props) => {
         });
         var minfo = new google.maps.InfoWindow({
           content: `
-        <div>${place.name}</div>
+        <div class='info-window'>${place.name}</div>
         `
         });
         m.addListener('mouseover', () => { minfo.open(map, m); });

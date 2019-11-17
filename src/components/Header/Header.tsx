@@ -28,7 +28,7 @@ const Header: React.FC<HeaderProps> = (props) => {
       <Nav className="mr-auto">
         {switchLink(props.pagetype)}
       </Nav>
-      <Form.Control as="select" style={{width: '5vw', marginRight: '1vw'}}>
+      <Form.Control as="select" style={{width: '60px', marginRight: '1vw'}}>
         <option>JP</option>
       </Form.Control>
       <Button onClick={props.getPosition} id='get-position-button'><FontAwesomeIcon icon={faCrosshairs} /></Button>

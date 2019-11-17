@@ -1,0 +1,15 @@
+
+#dist-btn {
+  background-color: rgb(103, 186, 103);
+  border: rgb(103, 186, 103);
+  font-size: 2vh;
+}
+
+.info-window {
+  width: 100%;
+  height: 100%;
+}
+
+/* .gm-style-iw{
+  box-sizing: border-box;
+} */
